@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Analytics - Traffic Safety</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-brand {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .nav-links a.active {
+            border-bottom: 2px solid white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .chart-title i {
+            margin-right: 10px;
+            color: #667eea;
+        }
+
+        .chart-container {
+            height: 400px;
+            width: 100%;
+        }
+
+        .full-width-chart {
+            grid-column: 1 / -1;
+        }
+
+        .insights-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .insights-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .insights-title i {
+            margin-right: 10px;
+            color: #667eea;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .insight-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .insight-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .insight-text {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: #666;
+        }
+
+        .loading i {
+            margin-right: 10px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <i class="fas fa-car-crash"></i> Traffic Safety Analytics
+            </a>
+            <div class="nav-links">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/analytics" class="active">Analytics</a>
+                <a href="/reports">Reports</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Advanced Analytics</h1>
+            <p class="page-subtitle">Deep dive into traffic safety patterns and risk factors</p>
+        </div>
+
+        <div class="analytics-grid">
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <i class="fas fa-cloud-rain"></i>
+                    Weather Impact on Fatal Accidents
+                </h3>
+                <div class="chart-container" id="weather-chart">
+                    <div class="loading">
+                        <i class="fas fa-spinner"></i>
+                        Loading chart...
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Speed Limit vs Fatal Accident Rate
+                </h3>
+                <div class="chart-container" id="speed-chart">
+                    <div class="loading">
+                        <i class="fas fa-spinner"></i>
+                        Loading chart...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="insights-section">
+            <h2 class="insights-title">
+                <i class="fas fa-lightbulb"></i>
+                Key Insights & Recommendations
+            </h2>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <h4 class="insight-title">Weather Conditions</h4>
+                    <p class="insight-text">Adverse weather conditions significantly increase fatal accident rates. Snowy and icy conditions show the highest risk, followed by foggy conditions. Consider implementing weather-based speed restrictions and enhanced road maintenance during winter months.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">Speed Limits</h4>
+                    <p class="insight-text">Higher speed limits correlate with increased fatal accident rates. Areas with speed limits above 50 mph show a dramatic increase in fatal accidents. Consider reducing speed limits in high-risk areas and implementing speed cameras.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">Risk Factors</h4>
+                    <p class="insight-text">Alcohol involvement and distracted driving are major contributors to fatal accidents. Alcohol-related accidents have a significantly higher fatality rate compared to overall accidents. Enhanced enforcement and public awareness campaigns are recommended.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">Seasonal Patterns</h4>
+                    <p class="insight-text">Winter months show increased accident frequency, particularly in December and January. Weekend accidents tend to be more severe. Consider seasonal safety campaigns and increased patrol during high-risk periods.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">Geographic Distribution</h4>
+                    <p class="insight-text">Downtown areas have the highest accident frequency, likely due to higher traffic density. Highway accidents, while less frequent, tend to be more severe. Focus infrastructure improvements on high-traffic urban areas.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">Time-Based Patterns</h4>
+                    <p class="insight-text">Afternoon and evening hours show the highest accident rates, coinciding with rush hour traffic. Night accidents, while less frequent, have higher severity rates. Consider traffic management strategies during peak hours.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load charts
+        function loadChart(endpoint, containerId) {
+            fetch(endpoint)
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById(containerId);
+                    container.innerHTML = '';
+                    Plotly.newPlot(container, data.data, data.layout, {responsive: true});
+                })
+                .catch(error => {
+                    console.error('Error loading chart:', error);
+                    document.getElementById(containerId).innerHTML = '<div class="loading">Error loading chart</div>';
+                });
+        }
+
+        // Load all analytics charts
+        loadChart('/api/weather_impact', 'weather-chart');
+        loadChart('/api/speed_analysis', 'speed-chart');
+        loadChart('/api/risk_factors', 'risk-chart');
+        loadChart('/api/monthly_breakdown', 'monthly-chart');
+    </script>
+</body>
+</html> 

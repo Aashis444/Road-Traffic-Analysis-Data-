@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Safety Analytics Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .card-icon.overview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-icon.analytics {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .card-icon.reports {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .card-icon.insights {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .card-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-features {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .card-features li {
+            padding: 5px 0;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .card-features li:before {
+            content: "✓";
+            color: #4facfe;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .card-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+            transition: transform 0.2s ease;
+        }
+
+        .card-button:hover {
+            transform: scale(1.05);
+        }
+
+        .stats-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            background: #f8f9fa;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 50px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-car-crash"></i> Traffic Safety Analytics</h1>
+            <p>Comprehensive analysis and insights for traffic safety data to improve road safety and reduce accidents</p>
+        </div>
+
+        <div class="stats-section">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #333;">Quick Statistics</h2>
+            <div class="stats-grid" id="quick-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="total-accidents">-</div>
+                    <div class="stat-label">Total Accidents</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="total-fatalities">-</div>
+                    <div class="stat-label">Total Fatalities</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="total-injuries">-</div>
+                    <div class="stat-label">Total Injuries</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="fatal-rate">-</div>
+                    <div class="stat-label">Fatal Rate (%)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Upload Section -->
+        <div class="upload-section" style="background: white; border-radius: 20px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto;">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #333;">Upload Your Traffic Data</h2>
+            <form id="upload-form" enctype="multipart/form-data" method="post" action="/upload" style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                <input type="file" name="datafile" id="datafile" accept=".csv,.json,.xls,.xlsx" required style="padding: 10px; border-radius: 8px; border: 1px solid #ccc; width: 100%; max-width: 350px;" />
+                <button type="submit" class="card-button" style="width: 180px;">Upload File</button>
+            </form>
+            <div id="upload-message" style="margin-top: 15px; text-align: center; color: #4facfe; font-weight: 500;"></div>
+        </div>
+
+        <div class="dashboard-grid">
+            <a href="/dashboard" class="dashboard-card">
+                <div class="card-icon overview">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="card-title">Overview Dashboard</h3>
+                <p class="card-description">Get a comprehensive overview of traffic safety metrics with interactive charts and real-time data visualization.</p>
+                <ul class="card-features">
+                    <li>Real-time accident trends</li>
+                    <li>Severity distribution analysis</li>
+                    <li>Geographic accident patterns</li>
+                    <li>Key performance indicators</li>
+                </ul>
+                <span class="card-button">View Dashboard</span>
+            </a>
+
+            <a href="/analytics" class="dashboard-card">
+                <div class="card-icon analytics">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h3 class="card-title">Advanced Analytics</h3>
+                <p class="card-description">Deep dive into traffic safety data with advanced statistical analysis and predictive modeling.</p>
+                <ul class="card-features">
+                    <li>Weather impact analysis</li>
+                    <li>Time-based patterns</li>
+                    <li>Risk factor correlation</li>
+                    <li>Speed limit analysis</li>
+                </ul>
+                <span class="card-button">Explore Analytics</span>
+            </a>
+
+            <a href="/reports" class="dashboard-card">
+                <div class="card-icon reports">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h3 class="card-title">Reports & Insights</h3>
+                <p class="card-description">Generate comprehensive reports and gain actionable insights for traffic safety improvements.</p>
+                <ul class="card-features">
+                    <li>Monthly safety reports</li>
+                    <li>Trend analysis insights</li>
+                    <li>Recommendation engine</li>
+                    <li>Export capabilities</li>
+                </ul>
+                <span class="card-button">View Reports</span>
+            </a>
+
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Traffic Safety Analytics Dashboard. Built with Python, Flask, and modern web technologies.</p>
+        </div>
+    </div>
+
+    <script>
+        // Load quick statistics
+        function loadStats() {
+            fetch('/api/summary_stats')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('total-accidents').textContent = data.total_accidents !== undefined ? data.total_accidents.toLocaleString() : '0';
+                    document.getElementById('total-fatalities').textContent = data.total_fatalities !== undefined ? data.total_fatalities.toLocaleString() : '0';
+                    document.getElementById('total-injuries').textContent = data.total_injuries !== undefined ? data.total_injuries.toLocaleString() : '0';
+                    document.getElementById('fatal-rate').textContent = data.fatal_accident_rate !== undefined ? data.fatal_accident_rate + '%' : '0%';
+                })
+                .catch(error => {
+                    document.getElementById('total-accidents').textContent = '0';
+                    document.getElementById('total-fatalities').textContent = '0';
+                    document.getElementById('total-injuries').textContent = '0';
+                    document.getElementById('fatal-rate').textContent = '0%';
+                });
+        }
+        loadStats();
+
+        // Handle file upload feedback
+        document.getElementById('upload-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            const messageDiv = document.getElementById('upload-message');
+            messageDiv.textContent = 'Uploading...';
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (result.success) {
+                    messageDiv.style.color = '#43e97b';
+                    messageDiv.textContent = 'File uploaded successfully! ' + (result.message || '');
+                    loadStats(); // Refresh stats after upload
+                } else {
+                    messageDiv.style.color = '#f5576c';
+                    messageDiv.textContent = 'Upload failed: ' + (result.message || 'Unknown error');
+                }
+            } catch (err) {
+                messageDiv.style.color = '#f5576c';
+                messageDiv.textContent = 'Upload failed: ' + err.message;
+            }
+        });
+    </script>
+</body>
+</html> 
